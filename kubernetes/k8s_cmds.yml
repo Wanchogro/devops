@@ -1,0 +1,76 @@
+---
+minikube_commands:
+  #minikube commands allows you to manage the cluster
+  - minikube start
+  - minikube stop
+  - minikube delete
+  - minikube update-check
+kuberctl commands:
+  #operations: kubectl main commands allows you to interact with the cluster nodes
+  - kubectl apply/create # create resources
+  - kubectl run # start a pod from an image
+  - kubectl explain #documentation of resources
+  - kubectl delete # delete resources
+  - kubectl get # list resources
+  - kubectl describe # detailed resource information
+  - kubectl exec # execute a command on a container
+  - kubectl logs # view logs on a container
+  - kubectl expose deployment {name} -port=80 --target-port=8080
+  # Resources
+  - nodes (no)
+  - pods (po)
+  - services (svc)
+  # output format
+  - wide # additional information
+  - yaml # yaml formatted api object
+  - json # json formatted API obkect
+  - dry-run # print object without sending it to the API server
+    kubectl create deployment hello-world --image=gcr.io/google-samples/hello-app:1.0 --dry-run=client -o yaml > hello_world_deployment.yaml
+  # full cli commands
+    kubectl [command][type][name][flags]: 
+    - kubectl cluster-info
+    - kubectl -h
+    - kubectl get -h | more
+    - kubectl get pods pod1 --output=yaml
+    - kubectl create deployment nginx --image=nginx
+    - kubectl get all --all-namespaces | more
+    - kubectl api-resources | more
+    - kubectl api-resources | grep pod
+    - kubectl get nodes
+    - kubectl get nodes -o wide #additional info about resource
+    - kubectl get namespaces
+    - kubectl get pods -A #pods in every namespace
+    - kubectl get pods --show-labels
+    - kubectl get services -A #services running in the cluster
+    - kubectl get services -n 'namespace'
+    - kubectl expose deployment 'name' \--port=80 --target-port=8080 --type ClusterIP #Create a service
+    - kubectl get enpoints
+    - kubectl apply -f 'file.yml' #create namespaces/deployment from yml manifiest
+    - kubectl delete -f 'file.yml' #delete namespaces from yml manifiest
+    - kubectl get deployments -n 'namespace'
+    - kubectl get pods -n 'namespace'
+    - kubectl get pods -n 'namespace' -o wide #PODs details
+    - kubectl get pods --all-namespaces --watch # Scale deployment, new endpoint are registered automatically to the service
+    - kubectl scale deployment 'name' --replicas=6
+    - kubectl delete pod 'podname' -n 'namespace'
+    - kubectl describe pod 'podname'-n 'namespace'
+    - kubectl logs 'podname' -n 'namespace' #PODs logs
+    - kubectl describe 'podname' -n 'namespace' #PODs  deployment logs and events
+    - kubectl exec -it 'podname' -- /bin/sh # Execute commands in the pod in a InTeractive -it terminal, -- /bin/sh specifies shell to use
+    - kubectl api-resources
+    
+
+linux:
+  - sudo systemctl status kubelet.service # check k8s service intallation
+  - ls /etc/kubernetes/manifests #static pod manifest on the control plane node
+  - ls /etc/kubernetes # Directory where the kubeconfig files lived in the control plane node,
+  - sudo systemctl enable containerd.service
+  - kubeadm token list # get the token for adding nodes to cluster
+  - kubeadm token create # generate a new token
+  - kubeadm token create --print-join-command # generates the command for joining in the proper format including hash.
+  - kubeadm join 'IP' \ --token 'token' \ -- discovery-token-ca-cert-hast sha256 "HASH"
+  - sudo docker ps #container detailed info
+
+
+
+    

@@ -1,0 +1,37 @@
+CNI: container network interface
+  - plugins (olverlay, tunnel)
+  - implements kubernetes network model
+
+no NAT between pods
+all pods can communicate to each other
+container communicates inside os a pod using localhost.
+
+Node Network: Node reachabiity between nodes. Real network in DC or Cloud. Overlay/Tunnel encap in node network for inter pod comm between nodes.
+  enrutamiento tunnels/encap:
+  se generan rutas hacia los pod network de otros nodos
+  se generan rutas /32 hacia los pods internos del mismo nodo y hacia la pod network local.
+
+Pod Network: IPs could be assigned from node network. Normally use and internal pool in the nodes/cluster.
+  enrutamiento:
+  Se genera un default gateway para todas las redes externas al pod.
+Cluster Network: Services Api Server config.
+Services: implemented in kube-proxy for exposing services to outside network.
+Cluster DNS:
+  coredns:
+    services - A/AAAA records
+    namespaces - subdomains
+  service discovery
+  dns forwaders
+
+Services:
+- Persistent endpoint access for clients.
+- Virtual IP and DNS
+- PODs are matched with services using labels and selectors, and load balanced.
+- PODs Load Balancing pod IP + port
+- implemenmted in kube-proxy on the node.
+- Service types: Ways to 
+  - Cluster IP: Service is assigned from cluster network. IP:PORT. Kube proxy in the nodes will create the rules to PODs selected for service.
+  Used to expose services to the cluster pods internally. 
+  - Node Port: kube/proxy will use the node IP and a TCP PORT from a range. Cluster IP is also created. Used for integration for external LB services.
+  - Load Balancer: External provicer will assign a public ip:port. The external service sends requests to node IP.
+
