@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: demo-service
+  namespace: default
+spec:
+  selector:
+    app: hello-world #label
+  ports:
+    - port: 80 #external port
+      protocol: TCP
+      targetPort: 8080 #internal pod port
+  type: ClusterIP #NodePort / ClusterIP / LoadBalancer

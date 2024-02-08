@@ -1,0 +1,63 @@
+---
+k8s cluster fundamentals:
+# Kubernetes Control-Plane
+  - components/pods namespace kube system: 
+      - kubectl get pods -n kube-system:
+        - kube-apiserver # Each object have an API endpoint. RESTFUL API. Handles the most of the control-plane request from/to worker nodes
+          - kubectl api-resources
+        - etcd-kube # open-source key-value  store. Data about cluster state
+          - kubectl logs etcd-minikube -n kube-system
+        - kube-controller-manager # loop that check status of the cluster. Replace worker nodes crashed.
+        - kube-scheduler # assign new pods created to and assigned as worker node.
+        - kube cloud controller manager # connects to Cloud Provider API GCP, AWS, Azure...
+
+# Kubernetes Workers nodes
+  - Min 3 worker nodes in a cluster.
+  - Kubelet # Agent that runs on every worker node. Assign check that containers in a pod are running ok. Communicates directly with api-server in control plane.
+  - container Runtime # CRI container runtime itnerface. CRI enables kubelet to create containers.
+  - Kube-proxy # make sure that pods and services communicate each other. Communicate directly with api-server in control plane.
+
+
+  - comments:
+    swap disabled:
+      - swapoff -a
+      - vi /etc/fstab
+
+  - Steps to install k8s:
+    1: install and configure packages: should be installed on all nodes, control planes or worker nodes.
+      - packages:
+        containerd: linux daemon that manages the container lifecycle of its host system. image transfer, storage, container execution, supervision, network.
+        kubelet: drive work on cluster nodes. The kubelet is the primary "node agent" that runs on each node.
+        kubeadm: Kubeadm is a tool built to provide kubeadm init and kubeadm join.
+        kubectl: command line tool to cluster administration.
+    2: create cluster (bootstrap kubeadm):
+        - Steps:
+          1: kubeadm init: initialization of cluster creation process.
+          2: pre-flight checks: checks to ensure cluster creation, system resources.
+          3: creates a certificate Authority: K8s uses for auth and encryption. self signed CA by default distributed to all nodes. Auth API server requests. /etc/kubernetes/pki
+          4: generate kubeconfig files: define how to connect to the cluster API server. Client certificates, and API server network info.
+            - files: /etc/kubernetes
+              admin.conf: super user 
+              kubelet.conf: locate API server and present client certificate
+              controller-manager.conf: locate API server and present client certificate
+              scheduler.conf: locate API server and present client certificate
+          5: generate static pod manifest: pods for control plane node (etcd, API server, Controller manager, Scheduler), written in filesystem (.yaml ) and kubelet will monitor the location.
+          6: wait for the control plane pods to start: etcd, API serve r pods
+          7: taint control plane node: 
+          8: generates a bootstrap token: for adding nodes to cluster
+          9: starts add-on compoonents: coreDNS and kube-proxy.
+    3: configure pod networking:
+      - networking options:
+        direct routing: all nodes and pods have IP / no NAT
+        overlay networking: tunneling of encapsulation vxlan
+          flannel
+          calico
+          weave
+    4: join nodes to cluster:
+     - Steps:
+      1: install packages
+      2: kubeadm join {api_server-ip:port} --token {node token}
+      3: download cluster info
+      4: node submits a CSR
+      5: CA signs the CSR and node download the certificate
+      6: configures kubelet.conf
