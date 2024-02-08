@@ -61,3 +61,5 @@ k8s cluster fundamentals:
       4: node submits a CSR
       5: CA signs the CSR and node download the certificate
       6: configures kubelet.conf
+
+
