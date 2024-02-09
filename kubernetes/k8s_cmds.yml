@@ -58,6 +58,12 @@ kuberctl commands:
     - kubectl describe 'podname' -n 'namespace' #PODs  deployment logs and events
     - kubectl exec -it 'podname' -- /bin/sh # Execute commands in the pod in a InTeractive -it terminal, -- /bin/sh specifies shell to use
     - kubectl api-resources
+    - kubectl -n <namespace> port-forward <pod_name> 8080:8080 # kubectl command to set up port forwarding
+
+
+kubectl -n jenkins port-forward <pod_name> 8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
     
 
 linux:
